@@ -73,9 +73,9 @@
             string apiSecret = "Jd42w6mS9wxd0r3hTMyBc7Uh9DonE8zCzT4SwO3DxKc2qrYy6hDNRXXJzEB4H8lD";
 
             //var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
-            //result = await spotAccountTrade.AccountTradeList("DOGEUSDT");
+            
             var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
-
+            result = await spotAccountTrade.AccountTradeList("DOGEUSDT");
 
             var response = await spotAccountTrade.AccountTradeList("DOGEUSDT");
             var httpResponse = new HttpResponseMessage();
@@ -102,6 +102,8 @@
         <tr>
             <th>Symbol</th>
             <th>Price</th>
+            <th>OrderId</th>
+            <th>Quantity</th>
             <!-- Add more table headers as needed -->
         </tr>
     </thead>
@@ -112,6 +114,8 @@
             <tr>
                 <td>@trade.Symbol</td>
                 <td>@trade.Price</td>
+                <td>@trade.orderId</td>
+                <td>@trade.qty</td>
                 <!-- Add more table cells with trade properties as needed -->
             </tr>
         }
