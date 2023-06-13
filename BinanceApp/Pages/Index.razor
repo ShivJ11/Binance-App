@@ -1,0 +1,120 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Binance Dashboard</h1>
+<p>@serverTime</p>
+
+@using Binance.Spot;
+@using Binance.Spot.Models;
+@using Binance.Common;
+@using BinanceApp.Data;
+@using Newtonsoft.Json;
+@using System.Net.Http;
+
+<button @onclick="SellSlp">Sell DOGE</button>
+<button @onclick="BuySlp">Buy DOGE</button>
+<button @onclick="TradeData">Trade DATA</button>
+<p>@result</p>
+
+
+
+
+@code{
+    string serverTime = "serverTime not found";
+    string result = "";
+    protected override async Task OnInitializedAsync()
+    {
+        Market market = new Market();
+
+        serverTime = await market.CheckServerTime();
+
+    }
+    public async Task SellSlp()
+    {
+        try
+        {
+            HttpClient httpClient = new HttpClient();
+            string apiKey = "wD9k8ST2I0RoXTziVNattQsIlgi573zVLEi440Oc0GkOgZg1Foh40aKOz54ypSki";
+            string apiSecret = "Jd42w6mS9wxd0r3hTMyBc7Uh9DonE8zCzT4SwO3DxKc2qrYy6hDNRXXJzEB4H8lD";
+
+            var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
+
+            result = await spotAccountTrade.NewOrder("DOGEUSDT", Side.SELL, OrderType.MARKET, quantity: 100 );
+        }
+        catch(BinanceClientException ex)
+        {
+            result="error: "+ex.Message;
+        }
+    }
+    public async Task BuySlp()
+    {
+        try
+        {
+            HttpClient httpClient = new HttpClient();
+            string apiKey = "wD9k8ST2I0RoXTziVNattQsIlgi573zVLEi440Oc0GkOgZg1Foh40aKOz54ypSki";
+            string apiSecret = "Jd42w6mS9wxd0r3hTMyBc7Uh9DonE8zCzT4SwO3DxKc2qrYy6hDNRXXJzEB4H8lD";
+
+            var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
+
+            result = await spotAccountTrade.NewOrder("DOGEUSDT", Side.BUY, OrderType.MARKET, quantity: 100);
+        }
+        catch (BinanceClientException ex)
+        {
+            result = "error: " + ex.Message;
+        }
+    }
+    public async Task TradeData()
+    {
+        try
+        {
+            HttpClient httpClient = new HttpClient();
+            string apiKey = "wD9k8ST2I0RoXTziVNattQsIlgi573zVLEi440Oc0GkOgZg1Foh40aKOz54ypSki";
+            string apiSecret = "Jd42w6mS9wxd0r3hTMyBc7Uh9DonE8zCzT4SwO3DxKc2qrYy6hDNRXXJzEB4H8lD";
+
+            //var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
+            //result = await spotAccountTrade.AccountTradeList("DOGEUSDT");
+            var spotAccountTrade = new SpotAccountTrade(httpClient, apiKey: apiKey, apiSecret: apiSecret);
+
+
+            var response = await spotAccountTrade.AccountTradeList("DOGEUSDT");
+            var httpResponse = new HttpResponseMessage();
+            httpResponse.Content = new StringContent(response);
+            httpResponse.EnsureSuccessStatusCode();
+
+            var json = await httpResponse.Content.ReadAsStringAsync();
+            trades = JsonConvert.DeserializeObject<List<Trade>>(json);
+
+
+        }
+        catch (BinanceClientException ex)
+        {
+            result = "error: " + ex.Message;
+        }
+    }
+}
+
+
+<button @onclick="TradeData">Get Trade Data</button>
+
+<table class="table">
+    <thead class="table-light">
+        <tr>
+            <th>Symbol</th>
+            <th>Price</th>
+            <!-- Add more table headers as needed -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Bind the JSON data to table rows using Razor syntax -->
+        @foreach (var trade in trades)
+        {
+            <tr>
+                <td>@trade.Symbol</td>
+                <td>@trade.Price</td>
+                <!-- Add more table cells with trade properties as needed -->
+            </tr>
+        }
+    </tbody>
+</table>
+
