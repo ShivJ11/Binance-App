@@ -12,9 +12,9 @@
 @using Newtonsoft.Json;
 @using System.Net.Http;
 
-<button @onclick="SellSlp">Sell DOGE</button>
-<button @onclick="BuySlp">Buy DOGE</button>
-<button @onclick="TradeData">Trade DATA</button>
+<button class="btn btn-danger" @onclick="SellSlp">Sell DOGE</button>
+<button class="btn btn-success" @onclick="BuySlp">Buy DOGE</button>
+<button class="btn btn-info" @onclick="TradeData">Trade DATA</button>
 <p>@result</p>
 
 
@@ -95,7 +95,7 @@
 }
 
 
-<button @onclick="TradeData">Get Trade Data</button>
+<button class="btn btn-primary" @onclick="TradeData">Get Trade Data</button>
 
 <table class="table">
     <thead class="table-light ">
